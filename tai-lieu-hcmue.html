@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kho Tài Liệu Tổng Hợp - HCMUE</title>
+    <style>
+        /* Giao diện trang tài liệu giả mạo (sạch sẽ, uy tín) */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            transition: background-color 0.1s;
+        }
+        #landing-page {
+            max-width: 800px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .header-logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .file-list {
+            text-align: left;
+            margin: 30px 0;
+        }
+        .file-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+        .file-icon {
+            font-size: 24px;
+            margin-right: 15px;
+        }
+        .download-btn {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            box-shadow: 0 4px 6px rgba(39, 174, 96, 0.3);
+        }
+        .download-btn:hover {
+            background-color: #219a52;
+        }
+
+        /* Giao diện khi bị "Hack" (Đáng sợ, chớp đỏ) */
+        #hacked-page {
+            display: none;
+            height: 100vh;
+            background-color: black;
+            color: #ff0000;
+            text-align: center;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .warning-text {
+            font-size: 50px;
+            font-weight: bold;
+            text-transform: uppercase;
+            animation: blink 0.5s infinite;
+        }
+        .sub-text {
+            font-size: 24px;
+            color: white;
+            margin-top: 20px;
+            max-width: 80%;
+        }
+        .reveal-text {
+            margin-top: 40px;
+            font-size: 30px;
+            color: #00ff00;
+            font-weight: bold;
+            display: none; /* Sẽ hiện ra sau vài giây */
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; color: #ff0000; }
+            50% { opacity: 0.2; color: yellow; }
+            100% { opacity: 1; color: #ff0000; }
+        }
+        
+        /* Hiệu ứng chớp nền toàn màn hình */
+        .flash-bg {
+            animation: bg-flash 0.3s infinite;
+        }
+        @keyframes bg-flash {
+            0% { background-color: black; }
+            50% { background-color: #8b0000; }
+            100% { background-color: black; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="landing-page">
+        <div class="header-logo">📚 THƯ VIỆN SỐ TÀI LIỆU DÙNG CHUNG - HCMUE</div>
+        <p>Vui lòng ấn tải xuống để nhận trọn bộ đề cương và câu hỏi trắc nghiệm ôn thi (Cập nhật 2024).</p>
+        
+        <div class="file-list">
+            <div class="file-item"><span class="file-icon">📄</span> 1. Triết học Mác - Lênin (Đề cương chi tiết).pdf</div>
+            <div class="file-item"><span class="file-icon">📘</span> 2. Tâm lý học đại cương - Tổng hợp 500 câu trắc nghiệm.docx</div>
+            <div class="file-item"><span class="file-icon">📙</span> 3. Tâm lý học giáo dục - Tài liệu lưu hành nội bộ.pdf</div>
+            <div class="file-item"><span class="file-icon">⚖️</span> 4. Pháp luật đại cương - Tình huống thực tế.pptx</div>
+            <div class="file-item"><span class="file-icon">🎓</span> 5. Giáo dục học - Tóm tắt toàn khóa.pdf</div>
+        </div>
+
+        <button class="download-btn" onclick="triggerTrap()">⬇ TẢI XUỐNG TẤT CẢ (ZIP - 45MB)</button>
+    </div>
+
+    <div id="hacked-page">
+        <div class="warning-text">⚠️ CẢNH BÁO BẢO MẬT ⚠️</div>
+        <div class="sub-text">HỆ THỐNG ĐÃ BỊ XÂM NHẬP! MÃ ĐỘC ĐANG ĐƯỢC TẢI XUỐNG THIẾT BỊ CỦA BẠN...</div>
+        <div class="sub-text" id="fake-progress">Đang trích xuất dữ liệu: 0%</div>
+        <div class="reveal-text" id="joke-reveal">ĐÙA CHÚT THÔI! CHÀO MỪNG BẠN ĐẾN VỚI BUỔI THUYẾT TRÌNH VỀ AN TOÀN THÔNG TIN! 😎</div>
+    </div>
+
+    <script>
+        let audioCtx;
+        let oscillator;
+        let gainNode;
+        let isBeeping = false;
+
+        // Hàm tạo tiếng còi báo động bằng Web Audio API
+        function playSiren() {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            oscillator = audioCtx.createOscillator();
+            gainNode = audioCtx.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            oscillator.type = 'square';
+            
+            // Hiệu ứng còi báo động lặp lại
+            setInterval(() => {
+                if(isBeeping) {
+                    oscillator.frequency.setValueAtTime(400, audioCtx.currentTime); // Âm trầm
+                    oscillator.frequency.linearRampToValueAtTime(800, audioCtx.currentTime + 0.3); // Vút lên âm cao
+                }
+            }, 600);
+
+            gainNode.gain.value = 0.5; // Âm lượng
+            oscillator.start();
+            isBeeping = true;
+        }
+
+        function triggerTrap() {
+            // 1. Ẩn trang mồi nhử, hiện trang hack
+            document.getElementById('landing-page').style.display = 'none';
+            const hackedPage = document.getElementById('hacked-page');
+            hackedPage.style.display = 'flex';
+            hackedPage.classList.add('flash-bg');
+
+            // 2. Phát âm thanh cảnh báo
+            playSiren();
+
+            // 3. Chạy phần trăm giả mạo tăng sự hoảng loạn
+            let progress = 0;
+            const progressText = document.getElementById('fake-progress');
+            const interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 15) + 5;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    progressText.innerText = "Trích xuất hoàn tất. Đang mã hóa thiết bị...";
+                    
+                    // 4. Lật bài ngửa sau khi chạy xong 100% (khoảng 3-4 giây)
+                    setTimeout(() => {
+                        document.getElementById('joke-reveal').style.display = 'block';
+                        document.querySelector('.warning-text').innerText = "BẠN VỪA BỊ LỪA!";
+                        hackedPage.classList.remove('flash-bg');
+                        hackedPage.style.backgroundColor = '#1a1a1a';
+                        
+                        // Tắt âm thanh
+                        isBeeping = false;
+                        if(oscillator) {
+                            oscillator.stop();
+                        }
+                    }, 1500);
+                } else {
+                    progressText.innerText = `Đang trích xuất dữ liệu, danh bạ, tin nhắn: ${progress}%`;
+                }
+            }, 300);
+        }
+    </script>
+</body>
+</html>
